@@ -16,6 +16,7 @@
      "bluetooth low energy" 
   ],
   "main": "./index.js",
+  "os": [ "darwin" ],
   "engines": {
     "node": "0.8.x"
   },
