@@ -15,24 +15,78 @@ function inherits(target, source) {
 
 var nobleBindings = new NobleBindings();
 
-nobleBindings.setupXpcConnection();
-
 
 nobleBindings.on('xpcEvent', function(event) {
+  var kCBMsgId = event.kCBMsgId;
+  var kCBMsgArgs = event.kCBMsgArgs;
+  console.log('xpcEvent = ');
   console.log(event);
+  this.emit('kCBMsgId' + kCBMsgId, kCBMsgArgs);
 });
 
 nobleBindings.on('xpcError', function(message) {
   console.log(message);
 });
 
-nobleBindings.sendXpcMessage({
-  kCBMsgId: 1,
-  kCBMsgArgs: {
-    kCBMsgArgAlert: 1,
-    kCBMsgArgName: "node"
-  }
+nobleBindings.on('kCBMsgId4', function(args) {
+  var state = ['unknown', 'resetting', 'unsupported', 'unauthorized', 'poweredOff', 'poweredOn'][args.kCBMsgArgState];
+  console.log('state = ' + state);
 });
+
+nobleBindings.on('kCBMsgId13', function(args) {
+  console.log('UUID ' + args.kCBMsgArgPeripheral.kCBMsgArgUUID.toString('hex'));
+  console.log('Handle ' + args.kCBMsgArgPeripheral.kCBMsgArgPeripheralHandle);
+  console.log('Service UUIDs ');
+  for(var i = 0; i < args.kCBMsgArgAdvertisementData.kCBAdvDataServiceUUIDs.length; i++) {
+    console.log('\t' + args.kCBMsgArgAdvertisementData.kCBAdvDataServiceUUIDs[i].toString('hex'));
+  }
+  console.log('Local Name ' + args.kCBMsgArgAdvertisementData.kCBAdvDataLocalName);
+  console.log('RSSI ' + args.kCBMsgArgRssi);
+});
+
+nobleBindings.sendCBMsg = function(id, args) {
+  this.sendXpcMessage({
+    kCBMsgId: id,
+    kCBMsgArgs: args
+  });
+};
+
+nobleBindings.init = function() {
+  this.sendCBMsg(1, {
+    kCBMsgArgAlert: 1,
+    kCBMsgArgName: 'node'
+  });
+};
+
+nobleBindings.startScanning = function(serviceUUIDs, allowDuplicates) {
+  var arg = {
+    kCBMsgArgOptions: {},
+    kCBMsgArgUUIDs: []
+  };
+
+  if (serviceUUIDs) {
+    for(var i = 0; i < serviceUUIDs.length; i++) {
+      arg.kCBMsgArgUUIDs[i] = new Buffer(serviceUUIDs[i], 'hex');
+    }
+  }
+
+  if (allowDuplicates) {
+    arg.kCBMsgArgOptions.kCBScanOptionAllowDuplicates = 1;
+  }
+
+  this.sendCBMsg(7, arg);
+};
+
+nobleBindings.stopScanning = function() {
+  this.sendCBMsg(8, null);
+};
+
+nobleBindings.setupXpcConnection();
+nobleBindings.init();
+
+nobleBindings.startScanning();
+// nobleBindings.stopScanning();
+
 
 // function Noble() {
 //   this._bindings = new NobleBindings();

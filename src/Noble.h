@@ -22,8 +22,14 @@ private:
   Noble();
   ~Noble();
 
+  static xpc_object_t ValueToXpcObject(v8::Handle<v8::Value> object);
   static xpc_object_t ObjectToXpcObject(v8::Handle<v8::Object> object);
-  static v8::Handle<v8::Object> XpcObjectToObject(xpc_object_t xpcObject);
+  static xpc_object_t ArrayToXpcObject(v8::Handle<v8::Array> array);
+
+  static v8::Handle<v8::Value> XpcObjectToValue(xpc_object_t xpcObject);
+  static v8::Handle<v8::Object> XpcDictionaryToObject(xpc_object_t xpcDictionary);
+  static v8::Handle<v8::Array> XpcArrayToArray(xpc_object_t xpcArray);
+
   static void HandleXpcEvent(uv_work_t* req);
 
   void setupXpcConnection();
