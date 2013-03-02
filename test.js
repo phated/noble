@@ -49,17 +49,32 @@ noble.on('peripheralDiscover', function(peripheral) {
   peripheral.on('servicesDiscover', function(services) {
     console.log('on -> peripheral services discovered ' + services);
 
-    services[0].on('includedServicesDiscover', function(includedServiceUuids) {
+    var serviceIndex = 0;
+
+    services[serviceIndex].on('includedServicesDiscover', function(includedServiceUuids) {
       console.log('on -> service included services discovered ' + includedServiceUuids);
       this.discoverCharacteristics();
     });
 
-    services[0].on('characteristicsDiscover', function(characteristics) {
+    services[serviceIndex].on('characteristicsDiscover', function(characteristics) {
       console.log('on -> service characteristics discovered ' + characteristics);
+
+      var characteristicIndex = 1;
+
+      characteristics[characteristicIndex].on('read', function(data) {
+        console.log('on -> characteristic read ' + data);
+        console.log(data);
+      });
+
+      characteristics[characteristicIndex].read();
+    });
+
+    services[serviceIndex].on('characteristicRead', function(characteristic, data) {
+      console.log('on -> service characteristic read ' + characteristic + ' ' + data);
       peripheral.disconnect();
     });
 
-    services[0].discoverIncludedServices();
+    services[serviceIndex].discoverIncludedServices();
   });
 
   peripheral.on('serviceIncludedServicesDiscover', function(service, includedServiceUuids) {
@@ -68,6 +83,10 @@ noble.on('peripheralDiscover', function(peripheral) {
 
   peripheral.on('serviceCharacteristicsDiscover', function(service, characteristics) {
     console.log('on -> peripheral service characteristics discovered ' + service + ' ' + characteristics);
+  });
+
+  peripheral.on('serviceCharacteristicRead', function(service, characteristic, data) {
+    console.log('on -> peripheral service characteristic read ' + service + ' ' + characteristic + ' ' + data);
   });
 
   peripheral.connect();
@@ -101,4 +120,8 @@ noble.on('peripheralServiceIncludedServicesDiscover', function(peripheral, servi
 
 noble.on('peripheralServiceCharacteristicsDiscover', function(peripheral, service, characteristics) {
   console.log('on -> peripheralServiceCharacteristicsDiscover: ' + peripheral + ' ' + service + ' ' + characteristics);
+});
+
+noble.on('peripheralServiceCharacteristicRead', function(peripheral, service, characteristic, data) {
+  console.log('on -> peripheralServiceCharacteristicRead: ' + peripheral + ' ' + service + ' ' + characteristic + ' ' + data);
 });
