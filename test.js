@@ -29,8 +29,7 @@ noble.on('peripheralDiscover', function(peripheral) {
 
   peripheral.on('connect', function() {
     console.log('on -> peripheral connect');
-    // this.updateRssi();
-    this.discoverServices();
+    this.updateRssi();
   });
 
   // peripheral.on('connectFailure', function(reason) {
@@ -49,7 +48,17 @@ noble.on('peripheralDiscover', function(peripheral) {
 
   peripheral.on('servicesDiscover', function(services) {
     console.log('on -> peripheral services discovered ' + services);
-    this.disconnect();
+
+    services[0].on('includedServicesDiscover', function(includedServiceUuids) {
+      console.log('on -> service included services discovered ' + includedServiceUuids);
+      peripheral.disconnect();
+    });
+
+    services[0].discoverIncludedServices();
+  });
+
+  peripheral.on('serviceIncludedServicesDiscover', function(service, includedServiceUuids) {
+    console.log('on -> peripheral service included services discovered ' + service + ' ' + includedServiceUuids);
   });
 
   peripheral.connect();
@@ -75,5 +84,9 @@ noble.on('peripheralRssiUpdate', function(peripheral, rssi) {
 
 noble.on('peripheralServicesDiscover', function(peripheral, services) {
   console.log('on -> peripheralServicesDiscover: ' + peripheral + ' ' + services);
+});
+
+noble.on('peripheralServiceIncludedServicesDiscover', function(peripheral, service, includedServiceUuids) {
+  console.log('on -> peripheralServicesDiscover: ' + peripheral + ' ' + service + ' ' + includedServiceUuids);
 });
 
