@@ -51,6 +51,11 @@ noble.on('peripheralDiscover', function(peripheral) {
 
     services[0].on('includedServicesDiscover', function(includedServiceUuids) {
       console.log('on -> service included services discovered ' + includedServiceUuids);
+      this.discoverCharacteristics();
+    });
+
+    services[0].on('characteristicsDiscover', function(characteristics) {
+      console.log('on -> service characteristics discovered ' + characteristics);
       peripheral.disconnect();
     });
 
@@ -59,6 +64,10 @@ noble.on('peripheralDiscover', function(peripheral) {
 
   peripheral.on('serviceIncludedServicesDiscover', function(service, includedServiceUuids) {
     console.log('on -> peripheral service included services discovered ' + service + ' ' + includedServiceUuids);
+  });
+
+  peripheral.on('serviceCharacteristicsDiscover', function(service, characteristics) {
+    console.log('on -> peripheral service characteristics discovered ' + service + ' ' + characteristics);
   });
 
   peripheral.connect();
@@ -90,3 +99,6 @@ noble.on('peripheralServiceIncludedServicesDiscover', function(peripheral, servi
   console.log('on -> peripheralServicesDiscover: ' + peripheral + ' ' + service + ' ' + includedServiceUuids);
 });
 
+noble.on('peripheralServiceCharacteristicsDiscover', function(peripheral, service, characteristics) {
+  console.log('on -> peripheralServiceCharacteristicsDiscover: ' + peripheral + ' ' + service + ' ' + characteristics);
+});
