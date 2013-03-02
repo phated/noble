@@ -70,8 +70,13 @@ noble.on('peripheralDiscover', function(peripheral) {
         console.log('on -> characteristic write ');
       });
 
+      characteristics[characteristicIndex].on('broadcast', function(state) {
+        console.log('on -> characteristic broadcast ' + state);
+      });
+
       //characteristics[characteristicIndex].read();
-      characteristics[characteristicIndex].write(new Buffer('hello'));
+      //characteristics[characteristicIndex].write(new Buffer('hello'));
+      characteristics[characteristicIndex].broadcast(true);
     });
 
     services[serviceIndex].on('characteristicRead', function(characteristic, data) {
@@ -81,6 +86,11 @@ noble.on('peripheralDiscover', function(peripheral) {
 
     services[serviceIndex].on('characteristicWrite', function(characteristic) {
       console.log('on -> service characteristic write ' + characteristic);
+      peripheral.disconnect();
+    });
+
+    services[serviceIndex].on('characteristicBroadcast', function(characteristic, state) {
+      console.log('on -> service characteristic broadcast ' + characteristic + ' ' + state);
       peripheral.disconnect();
     });
 
@@ -101,6 +111,10 @@ noble.on('peripheralDiscover', function(peripheral) {
 
   peripheral.on('serviceCharacteristicWrite', function(service, characteristic) {
     console.log('on -> peripheral service characteristic write ' + service + ' ' + characteristic);
+  });
+
+  peripheral.on('serviceCharacteristicBroadcast', function(service, characteristic, state) {
+    console.log('on -> peripheral service characteristic broadcast ' + service + ' ' + characteristic + ' ' + state);
   });
 
   peripheral.connect();
@@ -142,4 +156,8 @@ noble.on('peripheralServiceCharacteristicRead', function(peripheral, service, ch
 
 noble.on('peripheralServiceCharacteristicWrite', function(peripheral, service, characteristic) {
   console.log('on -> peripheralServiceCharacteristicWrite: ' + peripheral + ' ' + service + ' ' + characteristic);
+});
+
+noble.on('peripheralServiceCharacteristicBroadcast', function(peripheral, service, characteristic, state) {
+  console.log('on -> peripheralServiceCharacteristicBroadcast: ' + peripheral + ' ' + service + ' ' + characteristic + ' ' + state);
 });
