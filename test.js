@@ -49,7 +49,7 @@ noble.on('peripheralDiscover', function(peripheral) {
   peripheral.on('servicesDiscover', function(services) {
     console.log('on -> peripheral services discovered ' + services);
 
-    var serviceIndex = 0;
+    var serviceIndex = 2;
 
     services[serviceIndex].on('includedServicesDiscover', function(includedServiceUuids) {
       console.log('on -> service included services discovered ' + includedServiceUuids);
@@ -59,18 +59,28 @@ noble.on('peripheralDiscover', function(peripheral) {
     services[serviceIndex].on('characteristicsDiscover', function(characteristics) {
       console.log('on -> service characteristics discovered ' + characteristics);
 
-      var characteristicIndex = 1;
+      var characteristicIndex = 0;
 
       characteristics[characteristicIndex].on('read', function(data) {
         console.log('on -> characteristic read ' + data);
         console.log(data);
       });
 
-      characteristics[characteristicIndex].read();
+      characteristics[characteristicIndex].on('write', function() {
+        console.log('on -> characteristic write ');
+      });
+
+      //characteristics[characteristicIndex].read();
+      characteristics[characteristicIndex].write(new Buffer('hello'));
     });
 
     services[serviceIndex].on('characteristicRead', function(characteristic, data) {
       console.log('on -> service characteristic read ' + characteristic + ' ' + data);
+      peripheral.disconnect();
+    });
+
+    services[serviceIndex].on('characteristicWrite', function(characteristic) {
+      console.log('on -> service characteristic write ' + characteristic);
       peripheral.disconnect();
     });
 
@@ -87,6 +97,10 @@ noble.on('peripheralDiscover', function(peripheral) {
 
   peripheral.on('serviceCharacteristicRead', function(service, characteristic, data) {
     console.log('on -> peripheral service characteristic read ' + service + ' ' + characteristic + ' ' + data);
+  });
+
+  peripheral.on('serviceCharacteristicWrite', function(service, characteristic) {
+    console.log('on -> peripheral service characteristic write ' + service + ' ' + characteristic);
   });
 
   peripheral.connect();
@@ -124,4 +138,8 @@ noble.on('peripheralServiceCharacteristicsDiscover', function(peripheral, servic
 
 noble.on('peripheralServiceCharacteristicRead', function(peripheral, service, characteristic, data) {
   console.log('on -> peripheralServiceCharacteristicRead: ' + peripheral + ' ' + service + ' ' + characteristic + ' ' + data);
+});
+
+noble.on('peripheralServiceCharacteristicWrite', function(peripheral, service, characteristic) {
+  console.log('on -> peripheralServiceCharacteristicWrite: ' + peripheral + ' ' + service + ' ' + characteristic);
 });
