@@ -2,60 +2,62 @@ var noble = require('./index');
 
 console.log('noble');
 
-setInterval(function() {
-  console.log(10000);
-}, 1000);
+noble.on('stateChange', function(state) {
+  console.log('on -> stateChange: ' + state);
+
+  if (state === 'poweredOn') {
+    noble.startScanning();
+  } else {
+    noble.stopScanning();
+  }
+});
+
+noble.on('scanStart', function() {
+  console.log('on -> scanStart');
+});
+
+noble.on('scanStop', function() {
+  console.log('on -> scanStop');
+});
 
 
-// noble.on('scanStart', function() {
-//   console.log('on -> scanStart');
-// });
 
-// noble.on('scanStop', function() {
-//   console.log('on -> scanStop');
-// });
+noble.on('peripheralDiscover', function(peripheral) {
+  console.log('on -> peripheralDiscover: ' + peripheral);
 
-// noble.on('stateChange', function(state) {
-//   console.log('on -> stateChange: ' + state);
-// });
+  noble.stopScanning();
 
-// noble.on('peripheralDiscover', function(peripheral) {
-//   console.log('on -> peripheralDiscover: ');
-//   console.log(peripheral);
+  peripheral.on('connect', function() {
+    console.log('on -> peripheral connect');
+    // this.updateRssi();
+    this.discoverServices();
+  });
 
-//   noble.stopScanning();
+  // peripheral.on('connectFailure', function(reason) {
+  //   console.log('on -> peripheral connect failure');
+  //   console.log(reason);
+  // });
 
-//   peripheral.on('connect', function() {
-//     console.log('on -> peripheral connect');
-//     this.updateRssi();
-//   });
+  peripheral.on('disconnect', function() {
+    console.log('on -> peripheral disconnect');
+  });
 
-//   peripheral.on('connectFailure', function(reason) {
-//     console.log('on -> peripheral connect failure');
-//     console.log(reason);
-//   });
+  peripheral.on('rssiUpdate', function(rssi) {
+    console.log('on -> peripheral RSSI update ' + rssi);
+    this.discoverServices();
+  });
 
-//   peripheral.on('disconnect', function() {
-//     console.log('on -> peripheral disconnect');
-//   });
+  peripheral.on('servicesDiscover', function(services) {
+    console.log('on -> peripheral services discovered ' + services);
+    this.disconnect();
+  });
 
-//   peripheral.on('rssiUpdate', function(rssi) {
-//     console.log('on -> peripheral RSSI update ' + rssi);
-//     this.discoverServices();
-//   });
+  peripheral.connect();
+});
 
-//   peripheral.on('servicesDiscover', function(services) {
-//     console.log('on -> peripheral services discovered ' + services);
-//     this.disconnect();
-//   });
-
-//   peripheral.connect();
-// });
-
-// noble.on('peripheralConnect', function(peripheral) {
-//   console.log('on -> peripheralConnect: ');
-//   console.log(peripheral);
-// });
+noble.on('peripheralConnect', function(peripheral) {
+  console.log('on -> peripheralConnect: ' + peripheral);
+});
 
 // noble.on('peripheralConnectFailure', function(peripheral, reason) {
 //   console.log('on -> peripheralConnectFailure: ');
@@ -63,22 +65,15 @@ setInterval(function() {
 //   console.log(reason);
 // });
 
-// noble.on('peripheralDisconnect', function(peripheral) {
-//   console.log('on -> peripheralDisconnect: ');
-//   console.log(peripheral);
-// });
+noble.on('peripheralDisconnect', function(peripheral) {
+  console.log('on -> peripheralDisconnect: ' + peripheral);
+});
 
-// noble.on('peripheralRssiUpdate', function(peripheral, rssi) {
-//   console.log('on -> peripheralRssiUpdate: ');
-//   console.log(peripheral);
-//   console.log(rssi);
-// });
+noble.on('peripheralRssiUpdate', function(peripheral, rssi) {
+  console.log('on -> peripheralRssiUpdate: ' + peripheral + ' ' + rssi);
+});
 
-// noble.on('peripheralServicesDiscover', function(peripheral, services) {
-//   console.log('on -> peripheralServicesDiscover: ');
-//   console.log(peripheral);
-//   console.log(services);
-// });
+noble.on('peripheralServicesDiscover', function(peripheral, services) {
+  console.log('on -> peripheralServicesDiscover: ' + peripheral + ' ' + services);
+});
 
-// noble.startScanning();
- 

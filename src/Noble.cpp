@@ -47,7 +47,7 @@ void Noble::setupXpcConnection() {
 }
 
 void Noble::sendXpcMessage(xpc_object_t message) {
-  NSLog(@"sendXpcMessage: message = %@", message);
+  // NSLog(@"sendXpcMessage: message = %@", message);
   xpc_connection_send_message(this->xpcConnnection, message);
 }
 
@@ -232,7 +232,7 @@ void Noble::HandleXpcEvent(uv_work_t* req) {
     };
     node::MakeCallback(noble->This, "emit", 2, argv);
   } else if (eventType == XPC_TYPE_DICTIONARY) {
-    NSLog(@"HandleXpcEvent: event = %@", event);
+    // NSLog(@"HandleXpcEvent: event = %@", event);
     v8::Handle<v8::Object> eventObject = Noble::XpcDictionaryToObject(event);
 
     v8::Handle<v8::Value> argv[2] = {
