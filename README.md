@@ -83,12 +83,6 @@ Peripheral connected:
 
     peripheral.on('connect', callback);
 
-~~Peripheral connect failure:~~
-
-    ~~noble.on('peripheralConnectFailure', callback(peripheral, reason));~~
-
-    ~~peripheral.on('connectFailure', callback(reason));~~
-
 Peripheral disconnected:
 
     noble.on('peripheralDisconnect', callback(peripheral));
