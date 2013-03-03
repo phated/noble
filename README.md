@@ -117,7 +117,7 @@ Peripheral discovered:
       uuid: "<uuid>",
       advertisement: {
         localName: "<name>",
-        servicesData: <Buffer>,
+        serviceData: <Buffer>,
         txPowerLevel: <int>,
         serviceUuids: ["<service UUID>", ...],
       },
@@ -260,24 +260,26 @@ Roadmap (TODO)
          * ~~service UUID's~~
          * ~~allow duplicates~~
       * ~~stopScanning~~
-   * Peripheral (uuid, local name, service UUID's, RSSI)
+   * ~~Peripheral~~
      * ~~discovered~~
      * ~~connect~~
      * ~~disconnect/cancel connect~~
      * ~~update RSSI~~
-     * services
+     * ~~services~~
          * ~~discover~~
-         * disover included
-         * discover characteristics for services
-     * characteristics
-         * read
-         * write
-         * set broadcast value
-         * set notify value
-         * descriptors
-             * discover
-             * read
-             * write
+         * ~~disover included~~
+         * ~~discover characteristics for services~~
+     * ~~characteristics~~
+         * ~~read~~
+         * ~~write~~
+         * ~~set broadcast value~~
+         * ~~set notify value~~
+         * ~~descriptors~~
+             * ~~discover~~
+             * ~~read~~
+             * ~~write~~
+     * error handling
+
  * Linux
    * TDB
  * Windows
