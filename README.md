@@ -278,7 +278,7 @@ Roadmap (TODO)
              * ~~discover~~
              * ~~read~~
              * ~~write~~
-     * error handling
+   * error handling
 
  * Linux
    * TDB
