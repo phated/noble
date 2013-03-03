@@ -13,10 +13,10 @@
   "keywords": [
      "bluetooth",
      "BLE",
-     "bluetooth low energy" 
+     "bluetooth low energy",
+     "bluetooth smart"
   ],
   "main": "./index.js",
-  "os": [ "darwin" ],
   "engines": {
     "node": "0.8.x"
   },
